@@ -38,7 +38,7 @@ build/
 /index_o.html
 
 /node_modules
-/front/node_modules/
-/front/package-lock.json/
+/frontend/node_modules/
+/frontend/package-lock.json/
 /backend/index.html
 /backend/stats.json
