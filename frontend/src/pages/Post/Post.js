@@ -68,6 +68,11 @@ function Post({match}) {
             <Delete
                 onClick={handleDelete}/>
             }
+            {data.answers !== undefined &&
+            data.answers.map((item) => {
+                return <h1 key={item.id}>{item.content}</h1>
+            })
+            }
         </div>
 
     );
