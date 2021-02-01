@@ -1,8 +1,10 @@
 package com.francislainy.so.backend.dto.question;
 
+import com.francislainy.so.backend.dto.answer.AnswerQueryDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -15,9 +17,9 @@ public class QuestionQueryDto {
     private String description;
     private Long creationDate;
     private Long lastUpdated;
-    private Integer totalDownVotes;
-    private Integer totalUpVotes;
-    private Integer totalVotes;
+
+    private List<AnswerQueryDto> answers;
+
 
     public QuestionQueryDto(UUID id, String title, String description, Long creationDate) {
         this.id = id;
@@ -35,13 +37,13 @@ public class QuestionQueryDto {
         this.lastUpdated = lastUpdated;
     }
 
-    public QuestionQueryDto(UUID userId, UUID id, String title, String description, Long creationDate, Long lastUpdated) {
+    public QuestionQueryDto(UUID id, String title, String description, Long creationDate, Long lastUpdated, List answers) {
 
-        this.userId = userId;
         this.id = id;
         this.title = title;
         this.description = description;
         this.creationDate = creationDate;
         this.lastUpdated = lastUpdated;
+        this.answers = answers;
     }
 }

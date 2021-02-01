@@ -1,7 +1,9 @@
 package com.francislainy.so.backend.service.impl.question;
 
+import com.francislainy.so.backend.dto.answer.AnswerQueryDto;
 import com.francislainy.so.backend.dto.question.QuestionQueryDto;
 import com.francislainy.so.backend.entity.question.QuestionEntity;
+import com.francislainy.so.backend.repository.answer.AnswerRepository;
 import com.francislainy.so.backend.repository.question.QuestionRepository;
 import com.francislainy.so.backend.service.question.QuestionQueryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,19 +19,29 @@ public class QuestionQueryServiceImpl implements QuestionQueryService {
     @Autowired
     private QuestionRepository questionRepository;
 
+    @Autowired
+    private AnswerRepository answerRepository;
+
     @Override
     public QuestionQueryDto getQuestionItem(UUID userId, UUID id) {
 
         if (questionRepository.findById(id).isPresent()) {
             QuestionEntity question = questionRepository.findById(id).get();
 
-            return new QuestionQueryDto(question.getUserEntity().getId(), question.getId(), question.getTitle(), question.getDescription(), question.getCreationDate(), question.getLastUpdated());
+            List<AnswerQueryDto> answerList = new ArrayList<>();
+            answerRepository.findAnswerEntityByQuestionEntityId(question.getId()).forEach(answerEntity -> {
+
+                answerList.add(new AnswerQueryDto(answerEntity.getId(), answerEntity.getCreationDate(), answerEntity.getContent()));
+            });
+
+            return new QuestionQueryDto(question.getUserEntity().getId(), question.getId(), question.getTitle(), question.getDescription(), question.getCreationDate(), question.getLastUpdated(), answerList);
 
         } else {
             return null;
         }
 
     }
+
 
     @Override
     public QuestionQueryDto getMyQuestionItem(UUID userId, UUID id) { // todo: I think we may not need this controller - 23/01/2020
@@ -47,6 +59,7 @@ public class QuestionQueryServiceImpl implements QuestionQueryService {
             return null; // todo: return 403 if not valid user - 23/01/2020
         }
     }
+
 
     @Override
     public List<QuestionQueryDto> getMyQuestionList(UUID userId) {
@@ -66,13 +79,22 @@ public class QuestionQueryServiceImpl implements QuestionQueryService {
         return questionList;
     }
 
+
     @Override
     public List<QuestionQueryDto> getQuestionList(UUID userId) {
         List<QuestionQueryDto> questionList = new ArrayList<>();
 
         questionRepository.findAll().forEach(question -> {
 
-            questionList.add(new QuestionQueryDto(question.getId(), question.getTitle(), question.getDescription(), question.getCreationDate(), question.getLastUpdated()));
+            List<AnswerQueryDto> answerList = new ArrayList<>();
+
+            answerRepository.findAnswerEntityByQuestionEntityId(question.getId()).forEach(answerEntity -> {
+
+                answerList.add(new AnswerQueryDto(answerEntity.getId(), answerEntity.getCreationDate(), answerEntity.getContent()));
+            });
+
+
+            questionList.add(new QuestionQueryDto(question.getId(), question.getTitle(), question.getDescription(), question.getCreationDate(), question.getLastUpdated(), answerList));
 
         });
 

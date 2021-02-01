@@ -41,6 +41,12 @@ public class AnswerQueryDto {
         this.content = content;
     }
 
+    public AnswerQueryDto(UUID id, Long creationDate, String content) {
+        this.id = id;
+        this.creationDate = creationDate;
+        this.content = content;
+    }
+
     public AnswerQueryDto(String content) {
         this.content = content;
     }
