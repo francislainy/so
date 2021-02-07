@@ -29,7 +29,6 @@ function Ask({match}) {
 
     useEffect(() => {
         if (data !== undefined) {
-
             initialValues = {
                 title: data.title,
                 description: data.description,
