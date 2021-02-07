@@ -1,16 +1,16 @@
 import React from 'react';
-import './Delete.css';
+import './ActionButton.css';
 
 import Button from "react-bootstrap/Button";
 
 import * as PropTypes from "prop-types";
 
-function Delete(props) {
+function ActionButton(props) {
     return <Button className="custom-btn" onClick={props.onClick}>
-        Delete Question
+        {props.text}
     </Button>;
 }
 
-Delete.propTypes = {onClick: PropTypes.func};
+ActionButton.propTypes = {onClick: PropTypes.func};
 
-export default Delete
+export default ActionButton

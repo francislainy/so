@@ -10,7 +10,8 @@ function App() {
             <Switch>
                 <Route path="/" exact component={Home}/>
                 <Route path="/post/ask" exact component={Ask}/>
-                <Route path="/post/:id" exact component={Post}/>
+                <Route path="/post/edit/:id" exact component={Ask}/>
+                <Route path="/post/:id" exact component={Post} on/>
             </Switch>
         </Router>
     );

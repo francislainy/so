@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {port, url, userId} from "../../helpers/Constants";
 import {deleteQuestion, getQuestionItem} from "../../api/api";
 import Ask from "../../components/Ask/Ask";
-import Delete from "../../components/Delete/Delete";
+import ActionButton from "../../components/ActionButton/ActionButton";
 
 const {useHistory} = require('react-router-dom')
 
@@ -13,6 +13,13 @@ function Post({match}) {
 
     const handleAsk = () => {
         history.push(`/post/ask`);
+    }
+
+    const handleEdit = (id) => {
+        history.push({
+            pathname: `/post/edit/${id}`,
+            state: {data: data}
+        });
     }
 
     const handleDelete = () => {
@@ -57,16 +64,22 @@ function Post({match}) {
 
     return (
         <div className="App">
+            <Ask onClick={handleAsk}/>
             <h1>
                 {data.title}
             </h1>
             <h3>
                 {data.description}
             </h3>
-            <Ask onClick={handleAsk}/>
             {data.userId === userId &&
-            <Delete
-                onClick={handleDelete}/>
+            <div>
+                <ActionButton
+                    text="Delete Question"
+                    onClick={handleDelete}/>
+                <ActionButton
+                    text="Edit Question"
+                    onClick={() => handleEdit(match.params.id)}/>
+            </div>
             }
             {data.answers !== undefined &&
             data.answers.map((item) => {

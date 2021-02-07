@@ -43,6 +43,22 @@ exports.createQuestion = endpoint => {
     })
 }
 
+exports.editQuestion = endpoint => {
+    const url = endpoint.url
+    const port = endpoint.port
+    const id = endpoint.id
+    const payload = endpoint.payload
+    const userId = endpoint.userId
+
+    return axios.request({
+        method: "PUT",
+        baseURL: `${url}:${port}`,
+        data: payload,
+        url: `api/so/questions/${id}`,
+        headers: {Accept: "application/json", Authorization: userId},
+    })
+}
+
 exports.deleteQuestion = endpoint => {
     const url = endpoint.url
     const port = endpoint.port

@@ -1,23 +1,42 @@
 import React, {useEffect, useState} from 'react';
 import Button from "react-bootstrap/Button";
+import { useLocation } from "react-router-dom";
 
 import {port, url, userId} from "../../helpers/Constants";
-import {createQuestion} from "../../api/api";
+import {createQuestion, editQuestion} from "../../api/api";
 
 const moment = require("moment");
 const {useHistory} = require('react-router-dom')
 
-function Ask() {
+function Ask({match}) {
 
     let history = useHistory();
+    let location = useLocation();
 
-    const initialValues = {
+    let data;
+    if (location.state !== undefined) {
+        data = location.state.data
+    }
+
+    let initialValues;
+    initialValues = {
         title: "",
         description: "",
-    };
+    }
 
     const [values, setValues] = useState(initialValues);
     const [payload, setPayload] = useState({});
+
+    useEffect(() => {
+        if (data !== undefined) {
+
+            initialValues = {
+                title: data.title,
+                description: data.description,
+            };
+            setValues(initialValues)
+        }
+    }, [data !== undefined])
 
     const handleChange = (e) => {
 
@@ -31,35 +50,81 @@ function Ask() {
 
     useEffect(() => {
         setPayload({
-            "title": `${values.title}`,
-            "creationDate": moment().unix(),
-            "description": `${values.description}`,
+            title: `${values.title}`,
+            creationDate: moment().unix(),
+            description: `${values.description}`,
         })
     }, [values])
 
     const handleClick = () => {
 
-        // set payload data based of state from input and textarea
+        if (data === undefined) { // When there's no data object it means we are creating a new question
+
+            // set payload data based of state from input and textarea
+            const axiosParams = {
+                url: url,
+                port: port,
+                payload: payload,
+                userId: userId,
+            }
+
+            createQuestion(axiosParams, payload)
+
+                .then((response) => {
+                        // show success message ;
+                        history.push(`/`);
+                    }
+                ).catch(function (error) {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+            });
+        }
+        else {
+
+            // set payload data based of state from input and textarea
+            const axiosParams = {
+                url: url,
+                port: port,
+                id:match.params.id,
+                payload: payload,
+                userId: userId,
+            }
+
+            editQuestion(axiosParams, payload)
+
+                .then((response) => {
+                        // show success message ;
+                        history.push(`/`);
+                    }
+                ).catch(function (error) {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+            });
+        }
+    }
+
+    const handleEdit = () => {
         const axiosParams = {
             url: url,
             port: port,
-            payload: payload,
+            id: match.params.id,
             userId: userId,
         }
 
-        createQuestion(axiosParams, payload)
+        editQuestion(axiosParams)
 
-            .then((response) => {
-                    // show success message ;
+            .then(() => {
+
+                    console.log("question edited");
                     history.push(`/`);
                 }
-            ).catch(function (error) {
-            if (error.response) {
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-            }
-        });
+            )
 
     }
 
