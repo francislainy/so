@@ -1,6 +1,7 @@
 package com.francislainy.so.backend.service.impl.question;
 
 import com.francislainy.so.backend.dto.question.QuestionCreateDto;
+import com.francislainy.so.backend.dto.question.QuestionUpdateDto;
 import com.francislainy.so.backend.entity.question.QuestionEntity;
 import com.francislainy.so.backend.entity.user.UserEntity;
 import com.francislainy.so.backend.repository.question.QuestionRepository;
@@ -47,6 +48,29 @@ public class QuestionCommandServiceImpl implements QuestionCommandService {
 
 
     @Override
+    public QuestionUpdateDto updateQuestion(UUID userId, UUID questionId, QuestionUpdateDto questionUpdateDto) {
+
+        if (questionRepository.findById(questionId).isPresent()) {
+
+            QuestionEntity existingQuestion = questionRepository.findById(questionId).get();
+
+            existingQuestion.setTitle(questionUpdateDto.getTitle() + "gnf");
+            existingQuestion.setDescription(questionUpdateDto.getDescription());
+            ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of("Europe/Dublin"));
+            Timestamp timestamp = Timestamp.valueOf(zdt.toLocalDateTime());
+            existingQuestion.setLastUpdated(timestamp.getTime());
+
+            QuestionEntity updatedQuestion = questionRepository.save(existingQuestion);
+            return new QuestionUpdateDto(updatedQuestion.getId(), updatedQuestion.getTitle() + "f", updatedQuestion.getDescription(), updatedQuestion.getCreationDate(), updatedQuestion.getLastUpdated());
+
+        } else {
+            return null;
+        }
+
+    }
+
+
+    @Override
     public QuestionCreateDto voteQuestion(UUID questionId, Integer voteType) {
 
         if (questionRepository.findById(questionId).isPresent()) {
@@ -75,6 +99,7 @@ public class QuestionCommandServiceImpl implements QuestionCommandService {
             return null;
         }
     }
+
 
     @Override
     public void deleteQuestion(UUID userId, UUID id) {
