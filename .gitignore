@@ -42,3 +42,5 @@ build/
 /frontend/package-lock.json/
 /backend/index.html
 /backend/stats.json
+frontend.iml
+.eslintcache

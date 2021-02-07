@@ -88,3 +88,18 @@ exports.answerQuestion = endpoint => {
         headers: {Accept: "application/json", Authorization: userId},
     })
 }
+
+exports.deleteAnswer = endpoint => {
+    const url = endpoint.url
+    const port = endpoint.port
+    const id = endpoint.id
+    const answerId = endpoint.answerId
+    const userId = endpoint.userId
+
+    return axios.request({
+        method: "DELETE",
+        baseURL: `${url}:${port}`,
+        url: `api/so/questions/${id}/answers/${answerId}`,
+        headers: {Accept: "application/json", Authorization: userId},
+    })
+}

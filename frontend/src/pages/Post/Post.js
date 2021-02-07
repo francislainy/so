@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {port, url, userId} from "../../helpers/Constants";
-import {answerQuestion, deleteQuestion, getQuestionItem} from "../../api/api";
+import {answerQuestion, deleteAnswer, deleteQuestion, getQuestionItem} from "../../api/api";
 import Ask from "../../components/Ask/Ask";
 import ActionButton from "../../components/ActionButton/ActionButton";
 import Button from "react-bootstrap/Button";
@@ -27,7 +27,14 @@ function Post({match}) {
         history.push(`/post/ask`);
     }
 
-    const handleEdit = (id) => {
+    const handleEditQuestion = (id) => {
+        history.push({
+            pathname: `/post/edit/${id}`,
+            state: {data: data}
+        });
+    }
+
+    const handleEditAnswer = (id) => {
         history.push({
             pathname: `/post/edit/${id}`,
             state: {data: data}
@@ -52,7 +59,7 @@ function Post({match}) {
 
             .then((response) => {
                     // show success message ;
-                    console.log('answer submitted') //todo: reload component when answer submitted - 07/02/21
+                    console.log('answer submitted');
                     // history.push(`/`);
                     setReload(true)
                 }
@@ -65,7 +72,7 @@ function Post({match}) {
         });
     }
 
-    const handleDelete = () => {
+    const handleDeleteQuestion = () => {
         const axiosParams = {
             url: url,
             port: port,
@@ -81,8 +88,27 @@ function Post({match}) {
                     history.push(`/`);
                 }
             )
-
     }
+
+    const handleDeleteAnswer = (answerId) => {
+        const axiosParams = {
+            url: url,
+            port: port,
+            id: match.params.id,
+            answerId: answerId,
+            userId: userId,
+        }
+
+        deleteAnswer(axiosParams)
+
+            .then(() => {
+
+                    console.log("answer deleted");
+                    history.push(`/`);
+                }
+            )
+    }
+
     const handleChange = (e) => {
 
         const {name, value} = e.target;
@@ -135,10 +161,10 @@ function Post({match}) {
             <div>
                 <ActionButton
                     text="Delete Question"
-                    onClick={handleDelete}/>
+                    onClick={handleDeleteQuestion}/>
                 <ActionButton
                     text="Edit Question"
-                    onClick={() => handleEdit(match.params.id)}/>
+                    onClick={() => handleEditQuestion(match.params.id)}/>
                 <ActionButton
                     text="Submit Answer"
                     onClick={() => handleAnswerBox(match.params.id)}/>
@@ -146,7 +172,15 @@ function Post({match}) {
             }
             {data.answers !== undefined &&
             data.answers.map((item) => {
-                return <h1 key={item.id}>{item.content}</h1>
+                return <div>
+                    <h1 key={item.id}>{item.content}</h1>
+                    <Button variant="outline-primary" onClick={handleEditAnswer}>
+                        Edit Answer
+                    </Button>
+                    <Button variant="outline-primary" onClick={() => handleDeleteAnswer(item.id)}>
+                        Delete Answer
+                    </Button>
+                </div>
             })
             }
             {showAnswerBox &&
