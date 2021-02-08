@@ -11,14 +11,18 @@ const {useHistory} = require('react-router-dom')
 function Post({match}) {
 
     const [showAnswerBox, setShowAnswerBox] = useState(false)
+    const [showEditAnswerBox, setShowEditAnswerBox] = useState(false)
     const [data, setData] = useState({});
     const [reload, setReload] = useState(false);
+    const [indexClicked, setIndexClicked] = useState()
 
     let initialValues;
     initialValues = {
         content: "",
+        contentEdited: "",
     }
     const [values, setValues] = useState(initialValues);
+    const [valuesEdited, setValuesEdited] = useState(initialValues);
     const [payload, setPayload] = useState({});
 
     let history = useHistory();
@@ -34,11 +38,9 @@ function Post({match}) {
         });
     }
 
-    const handleEditAnswer = (id) => {
-        history.push({
-            pathname: `/post/edit/${id}`,
-            state: {data: data}
-        });
+    const handleEditAnswerBox = (index) => {
+        setShowEditAnswerBox(true)
+        setIndexClicked(index)
     }
 
     const handleAnswerBox = () => {
@@ -104,19 +106,40 @@ function Post({match}) {
             .then(() => {
 
                     console.log("answer deleted");
-                    history.push(`/`);
+                    setReload(true);
                 }
             )
+    }
+
+    const handleEditAnswer = (endpoint) => {
+
+        // if (showInputEndpoint) {
+        //     return <input defaultValue={endpoint} onChange={onChangeHandler}/>
+        // } else {
+        //     return <span>{endpoint}</span>
+        // }
     }
 
     const handleChange = (e) => {
 
         const {name, value} = e.target;
 
-        setValues({
-            ...values,
-            [name]: value,
-        });
+        if (name === "content") {
+
+            setValues({
+                ...values,
+                [name]: value,
+            });
+
+        }
+        else {
+
+            setValuesEdited({
+                ...valuesEdited,
+                [name]: value,
+            });
+
+        }
     }
 
     useEffect(() => {
@@ -148,6 +171,7 @@ function Post({match}) {
         console.log(values)
     }, [values])
 
+
     return (
         <div className="App">
             <Ask onClick={handleAsk}/>
@@ -171,18 +195,30 @@ function Post({match}) {
             </div>
             }
             {data.answers !== undefined &&
-            data.answers.map((item) => {
+            data.answers.map((item, i) => {
                 return <div>
-                    <h1 key={item.id}>{item.content}</h1>
-                    <Button variant="outline-primary" onClick={handleEditAnswer}>
+                    <h1 key={i}>{item.content}</h1>
+                    <Button variant="outline-primary" onClick={() => handleEditAnswerBox(i)}>
                         Edit Answer
                     </Button>
                     <Button variant="outline-primary" onClick={() => handleDeleteAnswer(item.id)}>
                         Delete Answer
                     </Button>
+                    {showEditAnswerBox && indexClicked === i &&
+                    <div>
+                    <textarea
+                        value={valuesEdited.contentEdited}
+                        onChange={handleChange}
+                        name="contentEdited"/>
+                        <Button variant="outline-primary" onClick={() => handleEditAnswer(item.id)}>
+                            Save
+                        </Button>
+                    </div>
+                    }
                 </div>
             })
             }
+
             {showAnswerBox &&
             <div>
                 <textarea
