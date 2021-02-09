@@ -54,6 +54,11 @@ public class QuestionEntity {
         this.id = id;
     }
 
+    public QuestionEntity(UUID id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
     public void addAnswer(AnswerEntity a) {
         if (this.answerEntities == null) {
             this.answerEntities = new ArrayList<>();

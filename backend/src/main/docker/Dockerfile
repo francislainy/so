@@ -8,6 +8,6 @@
 ##     docker run -p 8082:8081 so
 
 FROM openjdk:11
-ADD target/so.jar so.jar
+ADD ../../../target/so.jar so.jar
 EXPOSE 8081
 ENTRYPOINT ["java","-jar","/so.jar"]

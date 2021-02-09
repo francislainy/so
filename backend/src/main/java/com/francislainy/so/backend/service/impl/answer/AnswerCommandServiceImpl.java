@@ -1,6 +1,7 @@
 package com.francislainy.so.backend.service.impl.answer;
 
 import com.francislainy.so.backend.dto.answer.AnswerCreateDto;
+import com.francislainy.so.backend.dto.answer.AnswerUpdateDto;
 import com.francislainy.so.backend.entity.answer.AnswerEntity;
 import com.francislainy.so.backend.entity.question.QuestionEntity;
 import com.francislainy.so.backend.entity.user.UserEntity;
@@ -71,6 +72,39 @@ public class AnswerCommandServiceImpl implements AnswerCommandService {
 
             }
         }
+    }
+
+
+    @Override
+    public AnswerUpdateDto updateAnswer(UUID userId, UUID questionId, UUID answerId, AnswerUpdateDto answerUpdateDto) {
+
+        if (answerRepository.findById(answerId).get().getUserEntity().getId().equals(userId)) {
+
+            if (answerRepository.findById(answerId).isPresent()) {
+
+                AnswerEntity existingAnswer = answerRepository.findById(answerId).get();
+                existingAnswer.setContent(answerUpdateDto.getContent());
+                ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of("Europe/Dublin"));
+                Timestamp timestamp = Timestamp.valueOf(zdt.toLocalDateTime());
+                existingAnswer.setLastUpdated(timestamp.getTime());
+
+                QuestionEntity existingQuestion = questionRepository.findById(questionId).get();
+
+                QuestionEntity questionEntity = new QuestionEntity(existingQuestion.getId(), existingQuestion.getTitle());
+                existingQuestion.addAnswer(existingAnswer);
+
+                answerRepository.save(existingAnswer);
+
+                return new AnswerUpdateDto(existingAnswer.getId(),
+                        existingAnswer.getContent(), existingAnswer.getCreationDate(), existingAnswer.getLastUpdated(), questionEntity, null);
+
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+
     }
 
 }

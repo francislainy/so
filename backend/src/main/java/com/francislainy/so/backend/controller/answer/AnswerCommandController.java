@@ -2,6 +2,7 @@ package com.francislainy.so.backend.controller.answer;
 
 import com.francislainy.so.backend.dto.answer.AnswerCreateDto;
 import com.francislainy.so.backend.dto.answer.AnswerQueryDto;
+import com.francislainy.so.backend.dto.answer.AnswerUpdateDto;
 import com.francislainy.so.backend.dto.question.QuestionCreateDto;
 import com.francislainy.so.backend.dto.question.QuestionQueryDto;
 import com.francislainy.so.backend.service.answer.AnswerCommandService;
@@ -39,7 +40,7 @@ public class AnswerCommandController {
 
     @DeleteMapping(value = "/{questionId}/answers/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<QuestionCreateDto> deleteAnswer(@RequestHeader(required = false, value = "authorization") UUID userId, @PathVariable(value = "id") UUID id) {
+    public ResponseEntity<AnswerCreateDto> deleteAnswer(@RequestHeader(required = false, value = "authorization") UUID userId, @PathVariable(value = "id") UUID id) {
 
         if (userId == null) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
@@ -55,4 +56,21 @@ public class AnswerCommandController {
         }
     }
 
+
+    @PutMapping(value = "/{questionId}/answers/{answerId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<AnswerUpdateDto> updateAnswer(@RequestHeader(required = false, value = "authorization") UUID userId, @PathVariable(value = "questionId") UUID questionId, @PathVariable(value = "answerId") UUID answerId, @RequestBody AnswerUpdateDto answerUpdateDto) {
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } else {
+            AnswerQueryDto answerQueryDto = answerQueryService.getAnswerItem(userId, answerId);
+
+            if (answerQueryDto == null) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            } else {
+                return new ResponseEntity<>(answerCommandService.updateAnswer(userId, questionId, answerId, answerUpdateDto),HttpStatus.OK);
+            }
+        }
+    }
 }
