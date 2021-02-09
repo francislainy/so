@@ -54,14 +54,14 @@ public class QuestionCommandServiceImpl implements QuestionCommandService {
 
             QuestionEntity existingQuestion = questionRepository.findById(questionId).get();
 
-            existingQuestion.setTitle(questionUpdateDto.getTitle() + "gnf");
+            existingQuestion.setTitle(questionUpdateDto.getTitle());
             existingQuestion.setDescription(questionUpdateDto.getDescription());
             ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of("Europe/Dublin"));
             Timestamp timestamp = Timestamp.valueOf(zdt.toLocalDateTime());
             existingQuestion.setLastUpdated(timestamp.getTime());
 
             QuestionEntity updatedQuestion = questionRepository.save(existingQuestion);
-            return new QuestionUpdateDto(updatedQuestion.getId(), updatedQuestion.getTitle() + "f", updatedQuestion.getDescription(), updatedQuestion.getCreationDate(), updatedQuestion.getLastUpdated());
+            return new QuestionUpdateDto(updatedQuestion.getId(), updatedQuestion.getTitle(), updatedQuestion.getDescription(), updatedQuestion.getCreationDate(), updatedQuestion.getLastUpdated());
 
         } else {
             return null;

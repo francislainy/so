@@ -3,10 +3,59 @@ import React, {useEffect, useState} from 'react';
 import {port, url, userId} from "../../helpers/Constants";
 import {answerQuestion, deleteAnswer, deleteQuestion, editAnswer, getQuestionItem} from "../../api/api";
 import Ask from "../../components/Ask/Ask";
-import ActionButton from "../../components/ActionButton/ActionButton";
+import Question from "../../components/Question/Question";
 import Button from "react-bootstrap/Button";
+import * as PropTypes from "prop-types";
 
 const {useHistory} = require('react-router-dom')
+
+function Answer(props) {
+    return <div>
+        <h1>{props.item.content}</h1>
+        <Button variant="outline-primary" onClick={props.onHandleAnswerBox}>
+            Edit Answer
+        </Button>
+        <Button variant="outline-primary" onClick={props.onDelete}>
+            Delete Answer
+        </Button>
+        {props.showEditAnswerBox && props.indexClicked === props.i &&
+        <AnswerBody value={props.values.content}
+                    onChange={props.onChange}
+                    buttonName={props.buttonName}
+                    onClick={props.onEdit}/>
+        }
+    </div>;
+}
+
+Answer.propTypes = {
+    item: PropTypes.any,
+    onHandleAnswerBox: PropTypes.func,
+    onDelete: PropTypes.func,
+    showEditAnswerBox: PropTypes.bool,
+    indexClicked: PropTypes.func,
+    i: PropTypes.any,
+    values: PropTypes.shape({content: PropTypes.string}),
+    onChange: PropTypes.func,
+    onEdit: PropTypes.func
+};
+
+function AnswerBody(props) {
+    return <div>
+                <textarea
+                    value={props.value}
+                    onChange={props.onChange}
+                    name="content"/>
+        <Button variant="outline-primary" onClick={props.onClick}>
+            {props.buttonName}
+        </Button>
+    </div>;
+}
+
+AnswerBody.propTypes = {
+    values: PropTypes.shape({content: PropTypes.string}),
+    onChange: PropTypes.func,
+    onClick: PropTypes.func
+};
 
 function Post({match}) {
 
@@ -21,7 +70,6 @@ function Post({match}) {
     let initialValues;
     initialValues = {
         content: "",
-        contentEdited: "",
     }
     const [values, setValues] = useState(initialValues);
     const [valuesEdited, setValuesEdited] = useState(initialValues);
@@ -112,15 +160,6 @@ function Post({match}) {
             )
     }
 
-    // const handleEditAnswer = (endpoint) => {
-    //
-    //     // if (showInputEndpoint) {
-    //     //     return <input defaultValue={endpoint} onChange={onChangeHandler}/>
-    //     // } else {
-    //     //     return <span>{endpoint}</span>
-    //     // }
-    // }
-
     const handleEditAnswer = (answerId) => {
 
         const axiosParams = {
@@ -140,30 +179,32 @@ function Post({match}) {
                     setReload(true);
                     setValuesEdited(initialValues);
                     setShowEditAnswerBox(false);
+                    setShowAnswerBox(false);
                 }
             )
 
     }
 
-    const handleChange = (e) => {
+    const handleChangeSubmitAnswer = (e) => {
 
         const {name, value} = e.target;
 
-        if (name === "content") {
+        setValues({
+            ...values,
+            [name]: value,
+        });
+    }
 
-            setValues({
-                ...values,
-                [name]: value,
-            });
 
-        } else {
+    const handleChangeEditAnswer = (e) => {
 
-            setValuesEdited({
-                ...valuesEdited,
-                [name]: value,
-            });
+        const {name, value} = e.target;
 
-        }
+        setValuesEdited({
+            ...valuesEdited,
+            [name]: value,
+        });
+
     }
 
     useEffect(() => {
@@ -179,10 +220,11 @@ function Post({match}) {
 
             .then(({data}) => {
 
-                    setData({...data})
-                    setValues(initialValues)
-                    setShowAnswerBox(false)
-                    setReload(false)
+                    setData({...data});
+                    setValues(initialValues);
+                    setShowAnswerBox(false);
+                    setShowEditAnswerBox(false);
+                    setReload(false);
                 }
             )
 
@@ -197,68 +239,30 @@ function Post({match}) {
 
     useEffect(() => {
         setPayloadEdited({
-            content: `${valuesEdited.contentEdited}`,
+            content: `${valuesEdited.content}`,
         })
-        console.log(values)
-    }, [valuesEdited])
+        console.log(valuesEdited)
+    }, [valuesEdited.content])
 
     return (
         <div className="App">
             <Ask onClick={handleAsk}/>
-            <h1>
-                {data.title}
-            </h1>
-            <h3>
-                {data.description}
-            </h3>
-            {data.userId === userId &&
-            <div>
-                <ActionButton
-                    text="Delete Question"
-                    onClick={handleDeleteQuestion}/>
-                <ActionButton
-                    text="Edit Question"
-                    onClick={() => handleEditQuestion(match.params.id)}/>
-                <ActionButton
-                    text="Submit Answer"
-                    onClick={() => handleAnswerBox(match.params.id)}/>
-            </div>
-            }
+            <Question data={data}
+                      onDelete={handleDeleteQuestion}
+                      onEdit={() => handleEditQuestion(match.params.id)}
+                      onSubmitAnswer={() => handleAnswerBox(match.params.id)}/>
             {data.answers !== undefined &&
             data.answers.map((item, i) => {
-                return <div>
-                    <h1 key={i}>{item.content}</h1>
-                    <Button variant="outline-primary" onClick={() => handleEditAnswerBox(i)}>
-                        Edit Answer
-                    </Button>
-                    <Button variant="outline-primary" onClick={() => handleDeleteAnswer(item.id)}>
-                        Delete Answer
-                    </Button>
-                    {showEditAnswerBox && indexClicked === i &&
-                    <div>
-                    <textarea
-                        value={valuesEdited.contentEdited}
-                        onChange={handleChange}
-                        name="contentEdited"/>
-                        <Button variant="outline-primary" onClick={() => handleEditAnswer(item.id)}>
-                            Save
-                        </Button>
-                    </div>
-                    }
-                </div>
+                return <Answer key={i} item={item} onHandleAnswerBox={() => handleEditAnswerBox(i)}
+                               buttonName="Save Edited"
+                               onDelete={() => handleDeleteAnswer(item.id)} showEditAnswerBox={showEditAnswerBox}
+                               indexClicked={indexClicked} i={i} values={valuesEdited} onChange={handleChangeEditAnswer}
+                               onEdit={() => handleEditAnswer(item.id)}/>
             })
             }
 
             {showAnswerBox &&
-            <div>
-                <textarea
-                    value={values.content}
-                    onChange={handleChange}
-                    name="content"/>
-                <Button variant="outline-primary" onClick={handleSubmitAnswer}>
-                    Save
-                </Button>
-            </div>
+            <AnswerBody values={values} buttonName="Save New" onChange={handleChangeSubmitAnswer} onClick={handleSubmitAnswer}/>
             }
         </div>
     );
