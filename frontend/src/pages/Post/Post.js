@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 import {port, url, userId} from "../../helpers/Constants";
-import {answerQuestion, deleteAnswer, deleteQuestion, getQuestionItem} from "../../api/api";
+import {answerQuestion, deleteAnswer, deleteQuestion, editAnswer, getQuestionItem} from "../../api/api";
 import Ask from "../../components/Ask/Ask";
 import ActionButton from "../../components/ActionButton/ActionButton";
 import Button from "react-bootstrap/Button";
@@ -15,6 +15,8 @@ function Post({match}) {
     const [data, setData] = useState({});
     const [reload, setReload] = useState(false);
     const [indexClicked, setIndexClicked] = useState()
+    const [payload, setPayload] = useState({});
+    const [payloadEdited, setPayloadEdited] = useState({});
 
     let initialValues;
     initialValues = {
@@ -23,7 +25,6 @@ function Post({match}) {
     }
     const [values, setValues] = useState(initialValues);
     const [valuesEdited, setValuesEdited] = useState(initialValues);
-    const [payload, setPayload] = useState({});
 
     let history = useHistory();
 
@@ -111,13 +112,37 @@ function Post({match}) {
             )
     }
 
-    const handleEditAnswer = (endpoint) => {
+    // const handleEditAnswer = (endpoint) => {
+    //
+    //     // if (showInputEndpoint) {
+    //     //     return <input defaultValue={endpoint} onChange={onChangeHandler}/>
+    //     // } else {
+    //     //     return <span>{endpoint}</span>
+    //     // }
+    // }
 
-        // if (showInputEndpoint) {
-        //     return <input defaultValue={endpoint} onChange={onChangeHandler}/>
-        // } else {
-        //     return <span>{endpoint}</span>
-        // }
+    const handleEditAnswer = (answerId) => {
+
+        const axiosParams = {
+            url: url,
+            port: port,
+            questionId: match.params.id,
+            answerId: answerId,
+            userId: userId,
+            payload: payloadEdited
+        }
+
+        editAnswer(axiosParams)
+
+            .then(() => {
+
+                    console.log("answer edited");
+                    setReload(true);
+                    setValuesEdited(initialValues);
+                    setShowEditAnswerBox(false);
+                }
+            )
+
     }
 
     const handleChange = (e) => {
@@ -131,8 +156,7 @@ function Post({match}) {
                 [name]: value,
             });
 
-        }
-        else {
+        } else {
 
             setValuesEdited({
                 ...valuesEdited,
@@ -171,6 +195,12 @@ function Post({match}) {
         console.log(values)
     }, [values])
 
+    useEffect(() => {
+        setPayloadEdited({
+            content: `${valuesEdited.contentEdited}`,
+        })
+        console.log(values)
+    }, [valuesEdited])
 
     return (
         <div className="App">
