@@ -2,11 +2,13 @@ package com.francislainy.so.backend.dto.question;
 
 import com.francislainy.so.backend.dto.answer.AnswerQueryDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 import java.util.UUID;
 
+@Builder
 @AllArgsConstructor
 @Data
 public class QuestionQueryDto {

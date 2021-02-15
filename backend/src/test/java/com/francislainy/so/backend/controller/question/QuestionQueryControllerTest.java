@@ -2,6 +2,7 @@ package com.francislainy.so.backend.controller.question;
 
 import com.francislainy.so.backend.controller.question.QuestionQueryController;
 import com.francislainy.so.backend.dto.question.QuestionQueryDto;
+import com.francislainy.so.backend.exceptions.WrongUserException;
 import com.francislainy.so.backend.service.question.QuestionQueryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -139,6 +140,23 @@ public class QuestionQueryControllerTest {
 //                .andExpect(jsonPath("$", hasSize(3)))
                 .andReturn();
 
+    }
+
+    @Test
+    public void getMyQuestionWrongUser() throws Exception {
+        given(service.getMyQuestionItem(
+                UUID.fromString("85514581-cc50-4490-8612-6a288842ff6"),
+                UUID.fromString("05c903f7-7a55-470d-8449-cf7587f5a3fb")))
+                .willReturn(QuestionQueryDto.builder().build());
+
+        RequestBuilder request = MockMvcRequestBuilders
+                .get("/api/so/questions/05c903f7-7a55-470d-8449-cf7587f5a3fb/my")
+                .accept(MediaType.APPLICATION_JSON)
+                .header("authorization", UUID.fromString("85514581-cc50-4490-8612-6a288842ff6"));
+
+        mvc.perform(request)
+                .andExpect(status().isForbidden())
+                .andReturn();
     }
 
 }
