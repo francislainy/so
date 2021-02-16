@@ -3,6 +3,7 @@ package com.francislainy.so.backend.service.impl.question;
 import com.francislainy.so.backend.dto.answer.AnswerQueryDto;
 import com.francislainy.so.backend.dto.question.QuestionQueryDto;
 import com.francislainy.so.backend.entity.question.QuestionEntity;
+import com.francislainy.so.backend.exceptions.WrongUserException;
 import com.francislainy.so.backend.repository.answer.AnswerRepository;
 import com.francislainy.so.backend.repository.question.QuestionRepository;
 import com.francislainy.so.backend.service.question.QuestionQueryService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -45,18 +47,17 @@ public class QuestionQueryServiceImpl implements QuestionQueryService {
 
     @Override
     public QuestionQueryDto getMyQuestionItem(UUID userId, UUID id) { // todo: I think we may not need this controller - 23/01/2020
-        if (questionRepository.findById(id).get().getUserEntity().getId().equals(userId)) {
+        Optional<QuestionEntity> questionEntityOptional = questionRepository.findById(id);
+        if (questionRepository.findById(id).isPresent()) {
+            QuestionEntity question = questionEntityOptional.get();
 
-            if (questionRepository.findById(id).isPresent()) {
-                QuestionEntity question = questionRepository.findById(id).get();
-
-                return new QuestionQueryDto(question.getId(), question.getTitle(), question.getDescription(), question.getCreationDate(), question.getLastUpdated());
-
-            } else {
-                return null;
+            if (!userId.equals(question.getUserEntity().getId())) {
+                throw new WrongUserException();
             }
+
+            return new QuestionQueryDto(question.getId(), question.getTitle(), question.getDescription(), question.getCreationDate(), question.getLastUpdated());
         } else {
-            return null; // todo: return 403 if not valid user - 23/01/2020
+            return null; //404
         }
     }
 

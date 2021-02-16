@@ -1,7 +1,9 @@
 package com.francislainy.so.backend.controller.question;
 
 import com.francislainy.so.backend.dto.question.QuestionQueryDto;
+import com.francislainy.so.backend.exceptions.WrongUserException;
 import com.francislainy.so.backend.service.question.QuestionQueryService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,11 +18,18 @@ import java.util.UUID;
 @CrossOrigin
 @RequestMapping("/api/so/questions")
 @RestController
+@Slf4j
 public class QuestionQueryController {
 
     @Autowired
     private QuestionQueryService questionQueryService;
 
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    @ExceptionHandler(WrongUserException.class)
+    @ResponseBody
+    public void handleWrongUserException(Exception ex) {
+        log.info("Forbidden exception throw: " + ex);
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

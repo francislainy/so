@@ -1,7 +1,9 @@
 package com.francislainy.so.backend.service.question;
 
+import com.francislainy.so.backend.exceptions.WrongUserException;
 import com.francislainy.so.backend.dto.question.QuestionQueryDto;
 import com.francislainy.so.backend.entity.question.QuestionEntity;
+import com.francislainy.so.backend.entity.user.UserEntity;
 import com.francislainy.so.backend.repository.question.QuestionRepository;
 import com.francislainy.so.backend.repository.user.UserRepository;
 import com.francislainy.so.backend.service.impl.question.QuestionQueryServiceImpl;
@@ -18,6 +20,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(SpringRunner.class)
 public class QuestionQueryServiceTest {
@@ -38,34 +41,46 @@ public class QuestionQueryServiceTest {
     private QuestionQueryServiceImpl questionQueryServiceImplMock;
 
     @Test
-    public void testQuestionItemFoundOnDbNotNull() {
-
-        Mockito.when(questionRepository.findById(Mockito.any(UUID.class))).thenReturn(Optional.of(new QuestionEntity()));
-
-        assertNotNull(questionQueryServiceImpl.getMyQuestionItem(UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb"), UUID.fromString("05c903f7-7a55-470d-8449-cf7587f5a3fb")));
-    }
-
-
-    @Test
     public void testQuestionItemFoundOnDb() {
+        UUID questionId = UUID.fromString("05c903f7-7a55-470d-8449-cf7587f5a3fb");
+        UUID userId = UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb");
 
-        Mockito.when(questionQueryServiceImpl.isUserEquals(UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb"), UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb"))).thenReturn(true);
-        Mockito.when(questionRepository.findById(Mockito.any(UUID.class))).thenReturn(Optional.of(new QuestionEntity(UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb"))));
+        Mockito.when(questionRepository.findById(questionId))
+                .thenReturn(Optional.of(QuestionEntity.builder()
+                        .id(questionId)
+                        .userEntity(
+                                UserEntity.builder()
+                                        .id(userId)
+                                        .build())
+                        .build()));
 
-        QuestionQueryDto questionQueryDto = questionQueryServiceImpl.getMyQuestionItem(UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb"), UUID.fromString("05c903f7-7a55-470d-8449-cf7587f5a3fb"));
-
-        assertNotNull(questionQueryDto);
-
-        assertEquals(questionQueryDto.getId(), UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb"));
+        QuestionQueryDto questionQueryDto = questionQueryServiceImpl.getMyQuestionItem(userId, questionId);
+        assertEquals(questionId, questionQueryDto.getId());
     }
-
 
     @Test
     public void testNoQuestionItemFoundOnDb() {
+        UUID questionId = UUID.fromString("05c903f7-7a55-470d-8449-cf7587f5a3fb");
+        UUID userId = UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb");
 
-        Mockito.when(questionRepository.findById(Mockito.any(UUID.class))).thenReturn(Optional.empty());
+        assertNull(questionQueryServiceImpl.getMyQuestionItem(userId, questionId));
+    }
 
-        assertNull(questionQueryServiceImpl.getMyQuestionItem(UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb"), UUID.fromString("05c903f7-7a55-470d-8449-cf7587f5a3fb")));
+    @Test(expected = WrongUserException.class)
+    public void testQuestionUserDoesNotMatchError() {
+        UUID questionId = UUID.fromString("05c903f7-7a55-470d-8449-cf7587f5a3fb");
+        UUID userId = UUID.fromString("02c903f7-7a55-470d-8449-cf7587f5a3fb");
+
+        Mockito.when(questionRepository.findById(questionId))
+                .thenReturn(Optional.of(QuestionEntity.builder()
+                        .id(questionId)
+                        .userEntity(
+                                UserEntity.builder()
+                                        .id(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+                                        .build())
+                        .build()));
+
+        questionQueryServiceImpl.getMyQuestionItem(userId, questionId);
     }
 
 }
