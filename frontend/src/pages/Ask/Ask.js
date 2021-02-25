@@ -61,8 +61,6 @@ function Ask({match}) {
 
             // set payload data based of state from input and textarea
             const axiosParams = {
-                url: url,
-                port: port,
                 payload: payload,
                 userId: userId,
             }
@@ -85,8 +83,6 @@ function Ask({match}) {
 
             // set payload data based of state from input and textarea
             const axiosParams = {
-                url: url,
-                port: port,
                 id:match.params.id,
                 payload: payload,
                 userId: userId,
@@ -110,8 +106,6 @@ function Ask({match}) {
 
     const handleEdit = () => {
         const axiosParams = {
-            url: url,
-            port: port,
             id: match.params.id,
             userId: userId,
         }

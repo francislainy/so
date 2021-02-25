@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 
 import PostItem from '../PostItem/PostItem'
 import {getQuestionList} from '../../api/api'
-import {port, url, userId} from "../../helpers/Constants";
+import {userId} from "../../helpers/Constants";
 
 function PostList(props) {
 
@@ -20,8 +20,6 @@ function PostList(props) {
     useEffect(() => {
 
         const axiosParams = {
-            url: url,
-            port: port,
             userId: userId
         }
 

@@ -1,8 +1,7 @@
 const axios = require("axios")
+const {url, port} = require("../helpers/Constants");
 
 exports.getQuestionList = endpoint => {
-    const url = endpoint.url
-    const port = endpoint.port
     const userId = endpoint.userId
 
     return axios.request({
@@ -14,8 +13,6 @@ exports.getQuestionList = endpoint => {
 }
 
 exports.getQuestionItem = endpoint => {
-    const url = endpoint.url
-    const port = endpoint.port
     const id = endpoint.id
     const userId = endpoint.userId
 
@@ -29,8 +26,6 @@ exports.getQuestionItem = endpoint => {
 }
 
 exports.createQuestion = endpoint => {
-    const url = endpoint.url
-    const port = endpoint.port
     const payload = endpoint.payload
     const userId = endpoint.userId
 
@@ -44,8 +39,6 @@ exports.createQuestion = endpoint => {
 }
 
 exports.editQuestion = endpoint => {
-    const url = endpoint.url
-    const port = endpoint.port
     const id = endpoint.id
     const payload = endpoint.payload
     const userId = endpoint.userId
@@ -60,8 +53,6 @@ exports.editQuestion = endpoint => {
 }
 
 exports.deleteQuestion = endpoint => {
-    const url = endpoint.url
-    const port = endpoint.port
     const id = endpoint.id
     const userId = endpoint.userId
 
@@ -74,8 +65,6 @@ exports.deleteQuestion = endpoint => {
 }
 
 exports.answerQuestion = endpoint => {
-    const url = endpoint.url
-    const port = endpoint.port
     const id = endpoint.id
     const userId = endpoint.userId
     const payload = endpoint.payload
@@ -90,8 +79,6 @@ exports.answerQuestion = endpoint => {
 }
 
 exports.deleteAnswer = endpoint => {
-    const url = endpoint.url
-    const port = endpoint.port
     const id = endpoint.id
     const answerId = endpoint.answerId
     const userId = endpoint.userId
@@ -105,8 +92,6 @@ exports.deleteAnswer = endpoint => {
 }
 
 exports.editAnswer = endpoint => {
-    const url = endpoint.url
-    const port = endpoint.port
     const questionId = endpoint.questionId
     const answerId = endpoint.answerId
     const payload = endpoint.payload

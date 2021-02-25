@@ -1,61 +1,12 @@
 import React, {useEffect, useState} from 'react';
 
-import {port, url, userId} from "../../helpers/Constants";
+import {userId} from "../../helpers/Constants";
 import {answerQuestion, deleteAnswer, deleteQuestion, editAnswer, getQuestionItem} from "../../api/api";
 import Ask from "../../components/Ask/Ask";
 import Question from "../../components/Question/Question";
-import Button from "react-bootstrap/Button";
-import * as PropTypes from "prop-types";
+import Answer, {AnswerItem} from "../../components/Answer/Answer"
 
 const {useHistory} = require('react-router-dom')
-
-function Answer(props) {
-    return <div>
-        <h1>{props.item.content}</h1>
-        <Button variant="outline-primary" onClick={props.onHandleAnswerBox}>
-            Edit Answer
-        </Button>
-        <Button variant="outline-primary" onClick={props.onDelete}>
-            Delete Answer
-        </Button>
-        {props.showEditAnswerBox && props.indexClicked === props.i &&
-        <AnswerBody value={props.values.content}
-                    onChange={props.onChange}
-                    buttonName={props.buttonName}
-                    onClick={props.onEdit}/>
-        }
-    </div>;
-}
-
-Answer.propTypes = {
-    item: PropTypes.any,
-    onHandleAnswerBox: PropTypes.func,
-    onDelete: PropTypes.func,
-    showEditAnswerBox: PropTypes.bool,
-    indexClicked: PropTypes.func,
-    i: PropTypes.any,
-    values: PropTypes.shape({content: PropTypes.string}),
-    onChange: PropTypes.func,
-    onEdit: PropTypes.func
-};
-
-function AnswerBody(props) {
-    return <div>
-                <textarea
-                    value={props.value}
-                    onChange={props.onChange}
-                    name="content"/>
-        <Button variant="outline-primary" onClick={props.onClick}>
-            {props.buttonName}
-        </Button>
-    </div>;
-}
-
-AnswerBody.propTypes = {
-    values: PropTypes.shape({content: PropTypes.string}),
-    onChange: PropTypes.func,
-    onClick: PropTypes.func
-};
 
 function Post({match}) {
 
@@ -99,8 +50,6 @@ function Post({match}) {
     const handleSubmitAnswer = () => {
 
         const axiosParams = {
-            url: url,
-            port: port,
             id: match.params.id,
             payload: payload,
             userId: userId,
@@ -125,8 +74,6 @@ function Post({match}) {
 
     const handleDeleteQuestion = () => {
         const axiosParams = {
-            url: url,
-            port: port,
             id: match.params.id,
             userId: userId,
         }
@@ -143,8 +90,6 @@ function Post({match}) {
 
     const handleDeleteAnswer = (answerId) => {
         const axiosParams = {
-            url: url,
-            port: port,
             id: match.params.id,
             answerId: answerId,
             userId: userId,
@@ -163,8 +108,6 @@ function Post({match}) {
     const handleEditAnswer = (answerId) => {
 
         const axiosParams = {
-            url: url,
-            port: port,
             questionId: match.params.id,
             answerId: answerId,
             userId: userId,
@@ -195,7 +138,6 @@ function Post({match}) {
         });
     }
 
-
     const handleChangeEditAnswer = (e) => {
 
         const {name, value} = e.target;
@@ -210,8 +152,6 @@ function Post({match}) {
     useEffect(() => {
 
         const axiosParams = {
-            url: url,
-            port: port,
             id: match.params.id,
             userId: userId,
         }
@@ -251,19 +191,19 @@ function Post({match}) {
                       onDelete={handleDeleteQuestion}
                       onEdit={() => handleEditQuestion(match.params.id)}
                       onSubmitAnswer={() => handleAnswerBox(match.params.id)}/>
-            {data.answers !== undefined &&
-            data.answers.map((item, i) => {
-                return <Answer key={i} item={item} onHandleAnswerBox={() => handleEditAnswerBox(i)}
-                               buttonName="Save Edited"
-                               onDelete={() => handleDeleteAnswer(item.id)} showEditAnswerBox={showEditAnswerBox}
-                               indexClicked={indexClicked} i={i} values={valuesEdited} onChange={handleChangeEditAnswer}
-                               onEdit={() => handleEditAnswer(item.id)}/>
-            })
-            }
 
-            {showAnswerBox &&
-            <AnswerBody values={values} buttonName="Save New" onChange={handleChangeSubmitAnswer} onClick={handleSubmitAnswer}/>
-            }
+            <Answer data={data} prop1={(item, i) => {
+                return <AnswerItem key={i}
+                                   item={item}
+                                   onHandleAnswerBox={() => handleEditAnswerBox(i)}
+                                   buttonName="Save Edited"
+                                   onDelete={() => handleDeleteAnswer(item.id)}
+                                   showEditAnswerBox={showEditAnswerBox}
+                                   indexClicked={indexClicked} i={i} values={valuesEdited}
+                                   onChange={handleChangeEditAnswer}
+                                   onEdit={() => handleEditAnswer(item.id)}/>
+            }} showAnswerBox={showAnswerBox} values={values} onChange={handleChangeSubmitAnswer}
+                    onClick={handleSubmitAnswer}/>
         </div>
     );
 }
