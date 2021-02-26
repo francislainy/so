@@ -31,9 +31,8 @@ function FilterTagList({activeItem}) {
         activeItem(item)
     }
 
-    return <div>
-        <div className="FilterTagList"
-             style={styles.FilterTagList}>
+    return (
+        <>
             {
                 data.map(i =>
                     <FilterTag
@@ -44,15 +43,8 @@ function FilterTagList({activeItem}) {
                         isSelected={activeListItem.id === i.id}
                     />)
             }
-        </div>
-    </div>;
-}
-
-const styles = {
-    FilterTagList: {
-        display: "flex",
-        flexDirection: "row"
-    }
+        </>
+    );
 }
 
 export default FilterTagList;

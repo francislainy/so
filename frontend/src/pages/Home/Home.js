@@ -3,7 +3,7 @@ import PostList from "../../components/PostList/PostList";
 import React, {useState} from "react";
 import Ask from "../../components/Ask/Ask";
 
-import './Home.css';
+import {Col, Container, Row} from "react-bootstrap";
 
 const {useHistory} = require('react-router-dom')
 
@@ -22,19 +22,35 @@ function Home() {
     }
 
     return (
-        <div className="Home">
-            <div className="buttons-container">
-                <FilterTagList
+        <Container fluid>
+            <Row>
+                <Col sm={8} md={8} style={{display: "flex"}}>
+                    <FilterTagList
+                        tagItemId={activeListItem.id}
+                        activeListItem={activeListItem}
+                        activeItem={activeItem}
+                    />
+                </Col>
+                <Col sm={4}
+                     md={4}
+                     style={{ display: "flex", justifyContent: "flex-end", verticalAlign: "middle" }}>
+                    <Ask onClick={handleClick}/>
+                </Col>
+            </Row>
+            <Row>
+                <Col sm={2} md={2}>
+                    <div></div>
+                </Col>
+                <Col sm={8} md={8} style={{ display: "flex" }}>
+                <PostList
                     tagItemId={activeListItem.id}
-                    activeListItem={activeListItem}
-                    activeItem={activeItem}
                 />
-                <Ask onClick={handleClick} style={{flexDirection: 'row', background: 'red'}}/>
-            </div>
-            <PostList
-                tagItemId={activeListItem.id}
-            />
-        </div>
+                </Col>
+                <Col sm={2} md={2}>
+                    <div>hi</div>
+                </Col>
+            </Row>
+        </Container>
     );
 }
 

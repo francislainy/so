@@ -9,7 +9,7 @@ function PostItem(props) {
     }
 
     return (
-        <div className="App" onClick={() => handleClick(props.id)}>
+        <div onClick={() => handleClick(props.id)}>
             <li>{props.value}</li>
         </div>
     );

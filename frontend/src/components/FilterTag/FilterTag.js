@@ -1,17 +1,10 @@
-import './FilterTag.css'
 import Button from "react-bootstrap/Button";
 
 function FilterTag(props) {
-
     return (
-        <div className="FilterTag" onClick={() => props.handleClick(props.item)}>
-            {props.isSelected ? <div className="FilterTag">
-                <Button style={styles.Active} className="custom-btn">{props.title}</Button>
-            </div> : <div className="FilterTag">
-                <Button style={styles.Inactive} className="custom-btn">{props.title}</Button>
-            </div>
-            }
-        </div>
+        <Button onClick={() => props.handleClick(props.item)}
+                style={props.isSelected ? styles.Active : styles.Inactive}
+                className="custom-btn">{props.title}</Button>
     );
 }
 

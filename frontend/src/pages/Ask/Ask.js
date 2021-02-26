@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import Button from "react-bootstrap/Button";
-import { useLocation } from "react-router-dom";
+import {useLocation} from "react-router-dom";
 
-import {port, url, userId} from "../../helpers/Constants";
+import {userId} from "../../helpers/Constants";
 import {createQuestion, editQuestion} from "../../api/api";
 
 const moment = require("moment");
@@ -78,12 +78,11 @@ function Ask({match}) {
                     console.log(error.response.headers);
                 }
             });
-        }
-        else {
+        } else {
 
             // set payload data based of state from input and textarea
             const axiosParams = {
-                id:match.params.id,
+                id: match.params.id,
                 payload: payload,
                 userId: userId,
             }
@@ -113,7 +112,6 @@ function Ask({match}) {
         editQuestion(axiosParams)
 
             .then(() => {
-
                     console.log("question edited");
                     history.push(`/`);
                 }
