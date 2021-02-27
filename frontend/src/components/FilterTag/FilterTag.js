@@ -1,4 +1,5 @@
 import Button from "react-bootstrap/Button";
+import './FilterTag.css'
 
 function FilterTag(props) {
     return (

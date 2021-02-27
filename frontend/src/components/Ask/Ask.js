@@ -6,7 +6,7 @@ import Button from "react-bootstrap/Button";
 import * as PropTypes from "prop-types";
 
 function Ask(props) {
-    return <Button className="custom-btn" onClick={props.onClick}>
+    return <Button className="ask-btn" onClick={props.onClick}>
         Ask Question
     </Button>;
 }

@@ -5,6 +5,7 @@ import {answerQuestion, deleteAnswer, deleteQuestion, editAnswer, getQuestionIte
 import Ask from "../../components/Ask/Ask";
 import Question from "../../components/Question/Question";
 import Answer, {AnswerItem} from "../../components/Answer/Answer"
+import {Col, Container, Row} from "react-bootstrap";
 
 const {useHistory} = require('react-router-dom')
 
@@ -185,13 +186,18 @@ function Post({match}) {
     }, [valuesEdited.content])
 
     return (
-        <div className="App">
-            <Ask onClick={handleAsk}/>
-            <Question data={data}
-                      onDelete={handleDeleteQuestion}
-                      onEdit={() => handleEditQuestion(match.params.id)}
-                      onSubmitAnswer={() => handleAnswerBox(match.params.id)}/>
-
+        <Container>
+            <Row>
+                <Col md={9} sm={9}>
+                    <Question data={data}
+                              onDelete={handleDeleteQuestion}
+                              onEdit={() => handleEditQuestion(match.params.id)}
+                              onSubmitAnswer={() => handleAnswerBox(match.params.id)}/>
+                </Col>
+                <Col md={3} sm={3} style={{display: "flex", justifyContent: "flex-end"}}>
+                    <Ask onClick={handleAsk}/>
+                </Col>
+            </Row>
             <Answer data={data} prop1={(item, i) => {
                 return <AnswerItem key={i}
                                    item={item}
@@ -204,7 +210,7 @@ function Post({match}) {
                                    onEdit={() => handleEditAnswer(item.id)}/>
             }} showAnswerBox={showAnswerBox} values={values} onChange={handleChangeSubmitAnswer}
                     onClick={handleSubmitAnswer}/>
-        </div>
+        </Container>
     );
 }
 

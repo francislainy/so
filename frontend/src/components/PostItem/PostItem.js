@@ -1,3 +1,5 @@
+import {ListGroup} from "react-bootstrap";
+
 const {useHistory} = require('react-router-dom')
 
 function PostItem(props) {
@@ -9,9 +11,9 @@ function PostItem(props) {
     }
 
     return (
-        <div onClick={() => handleClick(props.id)}>
-            <li>{props.value}</li>
-        </div>
+        <ListGroup.Item onClick={() => handleClick(props.id)}>
+            {props.value}
+        </ListGroup.Item>
     );
 }
 

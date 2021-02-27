@@ -1,8 +1,6 @@
 .custom-btn {
-    background-color: #000;
-    color: #fff;
     border-radius: 3px;
+    padding: 1px 10px;
     height: 40px;
-    width: 100px;
+    margin-right: 20px;
 }
-

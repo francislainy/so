@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import PostItem from '../PostItem/PostItem'
 import {getQuestionList} from '../../api/api'
 import {userId} from "../../helpers/Constants";
+import {ListGroup} from "react-bootstrap";
 
 function PostList(props) {
 
@@ -36,9 +37,9 @@ function PostList(props) {
     }, [props.tagItemId])
 
     return (
-        <ul>
+        <ListGroup variant="flush" style={{width: "100%"}}>
             {data.questions.map((item) => <PostItem key={item.id} id={item.id} value={item.title}/>)}
-        </ul>
+        </ListGroup>
     );
 }
 

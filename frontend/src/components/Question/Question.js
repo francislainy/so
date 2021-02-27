@@ -20,7 +20,7 @@ function Question(props) {
                 text="Edit Question"
                 onClick={props.onEdit}/>
             <ActionButton
-                text="Submit Answer"
+                text="Post Your Answer"
                 onClick={props.onSubmitAnswer}/>
         </div>
         }
