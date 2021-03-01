@@ -6,6 +6,7 @@ import Ask from "../../components/Ask/Ask";
 import Question from "../../components/Question/Question";
 import Answer, {AnswerItem} from "../../components/Answer/Answer"
 import {Col, Container, Row} from "react-bootstrap";
+import ActionButton from "../../components/ActionButton/ActionButton";
 
 const {useHistory} = require('react-router-dom')
 
@@ -198,18 +199,30 @@ function Post({match}) {
                     <Ask onClick={handleAsk}/>
                 </Col>
             </Row>
-            <Answer data={data} prop1={(item, i) => {
-                return <AnswerItem key={i}
-                                   item={item}
-                                   onHandleAnswerBox={() => handleEditAnswerBox(i)}
-                                   buttonName="Save Edited"
-                                   onDelete={() => handleDeleteAnswer(item.id)}
-                                   showEditAnswerBox={showEditAnswerBox}
-                                   indexClicked={indexClicked} i={i} values={valuesEdited}
-                                   onChange={handleChangeEditAnswer}
-                                   onEdit={() => handleEditAnswer(item.id)}/>
-            }} showAnswerBox={showAnswerBox} values={values} onChange={handleChangeSubmitAnswer}
-                    onClick={handleSubmitAnswer}/>
+            <h3>Answers</h3>
+            <Row>
+                <Col>
+                    <Answer data={data} prop1={(item, i) => {
+                        return <AnswerItem key={i}
+                                           item={item}
+                                           onHandleAnswerBox={() => handleEditAnswerBox(i)}
+                                           buttonName="Save Edited"
+                                           onDelete={() => handleDeleteAnswer(item.id)}
+                                           showEditAnswerBox={showEditAnswerBox}
+                                           indexClicked={indexClicked} i={i} values={valuesEdited}
+                                           onChange={handleChangeEditAnswer}
+                                           onEdit={() => handleEditAnswer(item.id)}/>
+                    }} showAnswerBox={showAnswerBox} values={values} onChange={handleChangeSubmitAnswer}
+                            onClick={handleSubmitAnswer}/>
+                </Col>
+            </Row>
+            <Row>
+                <Col style={{marginTop: "20px"}}>
+                    <ActionButton
+                        text="Post Your Answer"
+                        onClick={() => handleAnswerBox(match.params.id)}/>
+                </Col>
+            </Row>
         </Container>
     );
 }

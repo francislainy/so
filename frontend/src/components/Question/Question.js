@@ -1,6 +1,5 @@
 import React from "react";
 import {userId} from "../../helpers/Constants";
-import ActionButton from "../ActionButton/ActionButton";
 import * as PropTypes from "prop-types";
 
 function Question(props) {
@@ -13,15 +12,8 @@ function Question(props) {
         </h3>
         {props.data.userId === userId &&
         <div>
-            <ActionButton
-                text="Delete Question"
-                onClick={props.onDelete}/>
-            <ActionButton
-                text="Edit Question"
-                onClick={props.onEdit}/>
-            <ActionButton
-                text="Post Your Answer"
-                onClick={props.onSubmitAnswer}/>
+            <i className="fas fa-edit" onClick={props.onEdit} style={{marginRight: '20px'}}/>
+            <i className="fas fa-trash" onClick={props.onDelete}/>
         </div>
         }
     </>;

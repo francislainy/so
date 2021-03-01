@@ -11,12 +11,8 @@ AnswerBody.propTypes = {
 export function AnswerItem(props) {
     return <div>
         <h1>{props.item.content}</h1>
-        <Button variant="outline-primary" onClick={props.onHandleAnswerBox}>
-            Edit Answer
-        </Button>
-        <Button variant="outline-primary" onClick={props.onDelete}>
-            Delete Answer
-        </Button>
+        <i className="fas fa-edit" onClick={props.onHandleAnswerBox} style={{marginRight: '20px'}}/>
+        <i className="fas fa-trash" onClick={props.onDelete}/>
         {props.showEditAnswerBox && props.indexClicked === props.i &&
         <AnswerBody value={props.values.content}
                     onChange={props.onChange}
