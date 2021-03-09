@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -50,6 +51,9 @@ public class QuestionEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "questionEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<AnswerEntity> answerEntities;
+
+    @ManyToMany(mappedBy = "questionFavouriteEntity")
+    private Set<UserEntity> userEntities;
 
     public QuestionEntity(UUID id) {
         this.id = id;

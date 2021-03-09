@@ -1,6 +1,7 @@
 package com.francislainy.so.backend.service.impl.question;
 
 import com.francislainy.so.backend.dto.question.QuestionCreateDto;
+import com.francislainy.so.backend.dto.question.QuestionFavouriteCreateDto;
 import com.francislainy.so.backend.dto.question.QuestionUpdateDto;
 import com.francislainy.so.backend.entity.question.QuestionEntity;
 import com.francislainy.so.backend.entity.user.UserEntity;
@@ -115,6 +116,24 @@ public class QuestionCommandServiceImpl implements QuestionCommandService {
             }
         }
 
+    }
+
+
+    @Override
+    public QuestionFavouriteCreateDto favouriteQuestion(UUID userId, QuestionFavouriteCreateDto qf) {
+
+        if (questionRepository.findById(qf.getQuestionId()).isEmpty()) {
+            QuestionEntity questionEntity = questionRepository.findById(qf.getQuestionId()).get();
+            UserEntity userEntity = userRepository.findById(userId).get();
+
+            questionEntity.getUserEntities().add(userEntity);
+            userEntity.getQuestionEntities().add(questionEntity);
+
+            userRepository.save(userEntity);
+
+        }
+
+        return null;
     }
 
 }

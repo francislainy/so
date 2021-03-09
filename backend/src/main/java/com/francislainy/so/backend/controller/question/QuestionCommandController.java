@@ -1,6 +1,7 @@
 package com.francislainy.so.backend.controller.question;
 
 import com.francislainy.so.backend.dto.question.QuestionCreateDto;
+import com.francislainy.so.backend.dto.question.QuestionFavouriteCreateDto;
 import com.francislainy.so.backend.dto.question.QuestionQueryDto;
 import com.francislainy.so.backend.dto.question.QuestionUpdateDto;
 import com.francislainy.so.backend.service.question.QuestionCommandService;
@@ -54,6 +55,7 @@ public class QuestionCommandController {
         }
     }
 
+
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<QuestionUpdateDto> updateQuestion(@RequestHeader(required = false, value = "authorization") UUID userId, @PathVariable(value = "id") UUID id,
@@ -66,11 +68,25 @@ public class QuestionCommandController {
     }
 
 
+    @PostMapping(value = "/{id}/favourite", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<QuestionFavouriteCreateDto> setFavouriteQuestion(@RequestHeader(required = false, value = "authorization") UUID userId, @RequestBody QuestionFavouriteCreateDto questionFavouriteCreateDto) {
+
+        if (userId == null) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } else {
+            return new ResponseEntity<>(questionCommandService.favouriteQuestion(userId, questionFavouriteCreateDto), HttpStatus.OK);
+        }
+    }
+
+
     @PostMapping(value = "/{id}/vote/{voteType}", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<QuestionCreateDto> upvoteQuestion(@PathVariable(value = "id") UUID id, @PathVariable(value = "voteType") Integer voteType) {
 
         return new ResponseEntity<>(questionCommandService.voteQuestion(id, voteType), HttpStatus.OK);
     }
+
+
 
 }

@@ -7,6 +7,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -28,6 +29,14 @@ public class UserEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<AnswerEntity> answerEntities;
+
+    @ManyToMany
+    @JoinTable(
+            name = "question_favourite",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "question_id"))
+    private Set<QuestionEntity> questionFavouriteEntity;
+
 
     public UserEntity(UUID id) {
         this.id = id;

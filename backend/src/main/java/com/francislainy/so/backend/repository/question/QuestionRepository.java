@@ -1,6 +1,5 @@
 package com.francislainy.so.backend.repository.question;
 
-
 import com.francislainy.so.backend.entity.question.QuestionEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
