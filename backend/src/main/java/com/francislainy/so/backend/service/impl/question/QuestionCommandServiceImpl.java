@@ -122,7 +122,7 @@ public class QuestionCommandServiceImpl implements QuestionCommandService {
     @Override
     public QuestionFavouriteCreateDto favouriteQuestion(UUID userId, QuestionFavouriteCreateDto qf) {
 
-        if (questionRepository.findById(qf.getQuestionId()).isEmpty()) {
+        if (questionRepository.findById(qf.getQuestionId()).isPresent()) {
             QuestionEntity questionEntity = questionRepository.findById(qf.getQuestionId()).get();
             UserEntity userEntity = userRepository.findById(userId).get();
 
